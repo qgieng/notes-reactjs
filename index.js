@@ -1,7 +1,7 @@
 const http = require('http');
 const express = require('express');
 const app = express();
-
+const cors = require('cors');
 
 let notes = [  {
         id: 1,
@@ -20,7 +20,7 @@ let notes = [  {
 //request contains all of the information of the http request
 //response parameter is used to define howthe erquest is responded to. 
 
-
+app.use(cors())
 
 app.use(express.json());
 
@@ -34,12 +34,6 @@ const requestLogger = (request, response, next) => {
 
 app.use(requestLogger);
 
-
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
-
-app.use(unknownEndpoint)
 
 
 app.get('/', (req, res) => {
