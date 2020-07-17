@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/notes/5f0c2d5ac22c5243245b751d
+Content-Type: application/json
+
+{
+    "content":"Updated note using PUT twice",
+    "important": false
+}
