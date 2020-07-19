@@ -1,14 +1,23 @@
 require('dotenv').config();
 const express = require('express')
 const app = express()
-
+const bodyParser = require('body-parser') 
 const cors = require('cors')
 const Note = require('./models/notes');
+var morgan = require('morgan');
 
+
+morgan.token('bodydata', (req,res)=>{
+  return JSON.stringify(req.body);
+})
+
+app.use(bodyParser.json())
 app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :bodydata'));
 
 /** 
 let notes = [
@@ -67,22 +76,18 @@ app.put('/api/notes/:id', (request,response,next)=>{
 app.post('/api/notes', (request, response,next) => {
   const body = request.body
 
-  if (!body.content || body.content === undefined) {
-    return response.status(400).json({ 
-      error: 'content missing' 
-    })
-  }
-
-  const note = new Note({
+  const note= new Note({
     content: body.content,
     important: body.important || false,
-    date: new Date(),
-    id: generateId(),
+    date: new Date()
   });
 
   note.save().then(savedNote=>{
     response.json(savedNote.toJSON());
-  }).catch(error=>next(error));
+  }).then(savedAndFormattedNote=>{
+    response.json(savedAndFormattedNote);
+  })
+  .catch(error=>next(error));
 })
 
 app.get('/api/notes/:id', (request, response) => {
@@ -124,10 +129,10 @@ const unknownEndpoint = (request, response) => {
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
-  if (error.name === 'CastError') {
+  if (error.name === 'CastError' && error.kind == 'ObjectId') {
     return response.status(400).send({ error: 'malformatted id' })
-  } else if(error.name==='ValidationError'){
-    return response.status(400).json({error:error.message});
+  }  else if (error.name === 'ValidationError') {
+        return response.status(400).json({error: error.message});
   }
 
   next(error)

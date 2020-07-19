@@ -14,16 +14,14 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const noteSchema = new mongoose.Schema({
   content: {
-    type:String,
-    minlength:5,
-    required: true
+    type: String,
+    required: true,
+    minlength: 5
   },
-  date: {
-    type:Date,
-    required:true
-  },
+  date: Date,
   important: Boolean,
 })
+      
 
 noteSchema.set('toJSON', {
   transform: (document, returnedObject) => {

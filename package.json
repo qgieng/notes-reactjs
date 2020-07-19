@@ -21,6 +21,7 @@
     "express": "^4.17.1",
     "heroku": "^7.42.2",
     "mongoose": "^5.9.23",
+    "morgan": "^1.10.0",
     "save": "^2.4.0"
   },
   "devDependencies": {
