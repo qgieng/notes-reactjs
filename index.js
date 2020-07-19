@@ -1,14 +1,14 @@
-require('dotenv').config();
+require('dotenv').config()
 const express = require('express')
 const app = express()
-const bodyParser = require('body-parser') 
+const bodyParser = require('body-parser')
 const cors = require('cors')
-const Note = require('./models/notes');
-var morgan = require('morgan');
+const Note = require('./models/notes')
+var morgan = require('morgan')
 
 
-morgan.token('bodydata', (req,res)=>{
-  return JSON.stringify(req.body);
+morgan.token('bodydata', (req,res) => {
+  return JSON.stringify(req.body)
 })
 
 app.use(bodyParser.json())
@@ -17,9 +17,9 @@ app.use(express.json())
 app.use(express.static('build'))
 
 
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :bodydata'));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :bodydata'))
 
-/** 
+/**
 let notes = [
   {
     id: 1,
@@ -43,76 +43,63 @@ let notes = [
 */
 
 app.get('/api/notes', (req, res) => {
-  Note.find({}).then(notes=>{
-    res.json(notes);
+  Note.find({}).then(notes => {
+    res.json(notes)
   })
 })
 
-
-
-
-const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => n.id))
-    : 0
-  return maxId + 1
-}
-
-app.put('/api/notes/:id', (request,response,next)=>{
-  const body = request.body;
+app.put('/api/notes/:id', (request,response,next) => {
+  const body = request.body
 
   const note = {
     content: body.content,
     important: body.important
-  };
+  }
 
-  Note.findByIdAndUpdate(request.params.id, note, {new:true})
-  .then(updatedNote=>{
-    response.json(updatedNote);
-  })
-  .catch(error=>next(error));
-});
+  Note.findByIdAndUpdate(request.params.id, note, { new:true })
+    .then(updatedNote => {response.json(updatedNote)}).catch(error => next(error))
+})
 
 app.post('/api/notes', (request, response,next) => {
   const body = request.body
-
   const note= new Note({
     content: body.content,
     important: body.important || false,
     date: new Date()
-  });
-
-  note.save().then(savedNote=>{
-    response.json(savedNote.toJSON());
-  }).then(savedAndFormattedNote=>{
-    response.json(savedAndFormattedNote);
   })
-  .catch(error=>next(error));
+
+  note.save().then(savedNote => {
+    response.json(savedNote.toJSON())
+  }).then(savedAndFormattedNote => {
+    response.json(savedAndFormattedNote)
+  })
+    .catch(error => next(error))
 })
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/api/notes/:id', (request, response,next) => {
   Note.findById(request.params.id)
-    .then(note=>{
+    .then(note =>
+    {
       if(note){
-        response.json(note);
+        response.json(note)
       }
       else{
-        response.status(404).end();
+        response.status(404).end()
       }
     })
-    .catch(error=>{
+    .catch(error => {
       //console.log("catch error for api/notes/id " , error);
       //response.status(400).send({error:'malformatted id'});
-      next(error);
+      next(error)
     })
 })
 
 app.delete('/api/notes/:id', (request, response, next) => {
   Note.findByIdAndRemove(request.params.id)
-    .then(result=>{
-      response.status(204).end();
+    .then( result => {
+      response.status(204).end()
     })
-    .catch(error=>next(error));
+    .catch(error => next(error))
 })
 
 
@@ -129,20 +116,17 @@ const unknownEndpoint = (request, response) => {
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
-  if (error.name === 'CastError' && error.kind == 'ObjectId') {
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return response.status(400).send({ error: 'malformatted id' })
   }  else if (error.name === 'ValidationError') {
-        return response.status(400).json({error: error.message});
+    return response.status(400).json({ error: error.message })
   }
-
   next(error)
 }
 app.use(unknownEndpoint)
 app.use(errorHandler)
-
-
 const PORT = process.env.PORT
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+

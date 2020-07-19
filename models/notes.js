@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+var uniqueValidator = require('mongoose-unique-validator');
 mongoose.set('useFindAndModify', false);
 
 const url = process.env.MONGODB_URI;
@@ -21,7 +22,7 @@ const noteSchema = new mongoose.Schema({
   date: Date,
   important: Boolean,
 })
-      
+
 
 noteSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -30,5 +31,7 @@ noteSchema.set('toJSON', {
     delete returnedObject.__v
   }
 })
+
+noteSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Note', noteSchema)
