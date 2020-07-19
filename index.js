@@ -113,7 +113,11 @@ app.delete('/api/notes/:id', (request, response, next) => {
 
 
 
-/*----------------------------------------------------*/
+/*
+Recommended to put error handling at the end otherwise program will not function correctly.
+----------------------------------------------------*/
+
+
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
