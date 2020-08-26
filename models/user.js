@@ -1,7 +1,10 @@
 const mongoose = require(
     'mongoose'
 );
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 const UniqueValidator = require('mongoose-unique-validator');
+
 
 const userSchema = new mongoose.Schema({
   username: {
