@@ -1,6 +1,6 @@
 POST http://localhost:3001/api/notes
 Content-Type: application/json
-Authorization: bearer 5f4604d5d25f023918138fce
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI1ZjQ2MDRkNWQyNWYwMjM5MTgxMzhmY2UiLCJpYXQiOjE1OTkyMTU2NjN9.5o4ueo8xILtTRIH7bLkvpxYcu74Uj6ltIqMmhveA4O8
 
 {
         "content":"Posting Single Page appe useing Authorization",
